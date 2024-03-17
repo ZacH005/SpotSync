@@ -97,14 +97,6 @@ function populateUI(profile: UserProfile) {
     document.getElementById("country")!.innerText = profile.country;
 }
 
-async function fetchMyPlaylists(code: string): Promise<UserPlaylists> {
-    const result = await fetch("https://api.spotify.com/v1/me/playlists", {
-        method: "GET", headers: { Authorization: `Bearer ${code}` }
-    });
-
-    return await result.json();
-}
-
 async function fetchPlaylists(code: string, userID: string): Promise<UserPlaylists> {
     try{
         const result = await fetch("https://api.spotify.com/v1/users/"+userID+"/playlists", {
@@ -288,9 +280,9 @@ class SimpleGrid {
     // specify the columns
     private createColumnDefs() {
         return [
-            { field: "trackName", filter: true },
-            { field: "trackArtist" },
-            { field: "trackPopularity" }
+            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer },
+            { headerName: "Artist", field: "trackArtist" },
+            { headerName: "Popularity", field: "trackPopularity" }
         ];
     }
 
@@ -303,11 +295,20 @@ class SimpleGrid {
                 rowData.push({
                     trackName: track.trackName,
                     trackArtist: track.trackArtist,
-                    trackPopularity: track.trackPopularity
+                    trackPopularity: track.trackPopularity,
+                    trackUrl: track.trackUrl // Include track URL in rowData
                 });
             }
         }
         return rowData;
+    }
+
+    // Custom cell renderer to render track names as hyperlinks
+    private customCellRenderer(params: any) {
+        if (params.value && params.value !== '') {
+            return `<a href="${params.data.trackUrl}" target="spotifytab">${params.value}</a>`;
+        }
+        return null;
     }
 }
 
