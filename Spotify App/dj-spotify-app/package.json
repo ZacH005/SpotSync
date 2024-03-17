@@ -1,0 +1,23 @@
+{
+  "name": "spotify-profile-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node src/index.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.8"
+  },
+  "dependencies": {
+    "@spotify/web-api-ts-sdk": "^1.2.0",
+    "@types/spotify-web-playback-sdk": "^0.1.19",
+    "ag-grid-community": "^31.1.1",
+    "ag-grid-react": "^31.1.1",
+    "prompt-sync": "^4.2.0"
+  }
+}

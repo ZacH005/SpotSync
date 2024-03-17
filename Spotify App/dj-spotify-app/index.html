@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="css/style.css" />
+      <title>DJing Playlist App</title>
+
+      
+      <script src="https://sdk.scdn.co/spotify-player.js"></script>
+      <script defer src="src/script.ts" type="module"></script>
+      <script>
+        function displayProfile(){  
+          var x = document.getElementById('profile');
+        if (x.style.display == 'none') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }}
+
+        // function inputPlaylist()    {
+        //   let playlistIdentification = (document.getElementById('addPlaylist')).value;
+          
+        //   let resultElement = document.getElementById('result');
+        //   if (resultElement) {
+        //       resultElement.textContent = "Playlist ID:"+playlistIdentification;
+        //   }}
+      </script>
+  </head>
+
+  <body>
+    <nl>
+    <div>
+      <section>
+        <input id="clickMe" type="button" value="Display Profile" onclick="displayProfile()" />
+      </section>
+    </div>
+
+    <section id="inputUser">
+      <form>
+        <label for="addUser">User ID:</label><br>
+        <input type="text" id="addUser" name="addUser" value="fbx2u2h4kefo9xlhuhkej4bkx"><br>
+        <input id="submitUser" type="button" value="Submit">
+      </form>
+      <p id="result"></p>
+    </section>
+
+    <section id="profile">
+      <h1>Spotify profile data</h1>
+      <h2>Logged in as <span id="displayName"></span></h2>
+      <img id="avatar" width="500" src="#" />
+      <ul>
+        <li>User ID: <span id="id"></span></li>
+        <li>Country: <span id="country"></span></li>
+        <li>Email: <span id="email"></span></li>
+        <li>Spotify URI: <a id="uri" href="#"></a></li>
+        <li>Link: <a id="url" href="#"></a></li>
+        <li>Profile Image: <span id="imgUrl"></span></li>
+      </ul>
+    </section>
+
+    <section id="playback">
+      <h1>Spotify Player</h1>
+      <button id="previousSongButton">Back To Previous Track</button>
+      <button id="togglePlay">Play/Pause Tracks</button>
+      <button id="skipSongButton">Skip To Next Track</button>
+      <script>
+        window.onSpotifyWebPlaybackSDKReady = () => {
+            const token = "BQCtUm45Y2-9z9GVQDPqXhvF8n4x_9HI6V8JAmV8PW3506KJZSBdaKSsYnJUck4qAoML_yaO-t-NU86l90djG9FoL-tuMbgy7gYIREoLVms2o_1Hf64gkFQInUI3vpOWrDwKmNibNXyY3bq7_ZSovtlzcgHlvrZ0QLcuwFCxBsDeZJhF3iuTPNJlAA1_OXQkbr_aZmvAfOULtg";
+            const player = new Spotify.Player({
+                name: 'Web Playback',
+                getOAuthToken: cb => { cb(token); },
+                volume: 0.5
+            });
+
+            // Ready
+            player.addListener('ready', ({ device_id }) => {
+                console.log('Ready with Device ID', device_id);
+            });
+
+            // Not Ready
+            player.addListener('not_ready', ({ device_id }) => {
+                console.log('Device ID has gone offline', device_id);
+            });
+
+            player.addListener('initialization_error', ({ message }) => {
+                console.error(message);
+            });
+
+            player.addListener('authentication_error', ({ message }) => {
+                console.error(message);
+            });
+
+            player.addListener('account_error', ({ message }) => {
+                console.error(message);
+            });
+
+            document.getElementById('togglePlay').onclick = function() {
+              player.togglePlay();
+            };
+
+            player.connect();
+
+            document.getElementById('skipSongButton').onclick = function() {
+              player.nextTrack();
+            };
+
+            document.getElementById('previousSongButton').onclick = function() {
+              player.previousTrack();
+            };
+        }
+      </script>
+    </section>
+    
+    <section id="playlists">
+      <h1>User Playlists</h1>
+      <ul> 
+        <li>Playlists Total: <span id="playlists_total"></span></li>
+      </ul>
+        <table>
+          <tr><th></th>Playlists Names:</th></tr>
+          <tbody id="playlists_names"></tbody>
+        </table>
+    </section>
+  
+    <section id="inputPlaylist">
+      <form>
+        <label for="addPlaylist">Playlist ID:</label><br>
+        <input type="text" id="addPlaylist" name="addPlaylist" value="59XMuGvjGqOINdEGGos9NZ"><br>
+        <input id="submitPlaylist" type="button" value="Submit">
+      </form>
+      <p id="result"></p>
+    </section>
+    <section id="playlist">
+      <h1>Spotify Playlist</h1>
+      <table>
+        <tbody id="playlist_names">
+          <tr>
+            <th>Num of Tracks:</th>
+            <th>Playlist Name:</th>
+            <th>Picture:</th>
+            <th>Popularity:</th>
+          </tr>
+        </tbody>
+        <tbody id="playlist_track_names">
+          <tr>
+            <th onclick="sortTable(0)">Num:</th>
+            <th>Track Name:</th>
+            <th>Artist:</th>
+            <th onclick="sortTable(3)">Popularity:</th>
+          </tr>
+          <script>
+            function sortTable(n) {
+              var table, rows, switching, i, x, y, shouldSwitch;
+              table = document.getElementById("playlist_track_names");
+              switching = true;
+
+              /*Make a loop that will continue until
+              no switching has been done:*/
+              while (switching) {
+
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+
+                  //start by saying there should be no switching:
+                  shouldSwitch = false;
+
+                  /*Get the two elements you want to compare,
+                  one from current row and one from the next:*/
+                  x = rows[i].getElementsByTagName("TD")[n];
+                  y = rows[i + 1].getElementsByTagName("TD")[n];
+
+                  if (x|y != null){
+
+                    //check if the two rows should switch place:
+                    if (Number(x.innerHTML) < Number(y.innerHTML)) {
+                      
+                      //if so, mark as a switch and break the loop:
+                      shouldSwitch = true;
+                      break;
+                    }
+                  }
+                  else{
+                    break;
+                  }
+                }
+                if (shouldSwitch) {
+
+                  /*If a switch has been marked, make the switch
+                  and mark that a switch has been done:*/
+                  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                  switching = true;
+                }
+              }
+            }
+          </script>
+        </tbody>
+      </table>
+    </section>
+  </body>
+</html>
