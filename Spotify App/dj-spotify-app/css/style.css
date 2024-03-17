@@ -102,7 +102,7 @@ table, th, td {
 
 @font-face {
   font-family: "Ethos Nova";
-  src: url('/Users/s0066492/Documents/Spotify App/dj-spotify-app/fonts/EthosNova-Regular.ttf') format('truetype');
+  src: url('Spotify App/dj-spotify-app/fonts/EthosNova-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
