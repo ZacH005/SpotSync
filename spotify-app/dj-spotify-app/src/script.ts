@@ -35,6 +35,8 @@ type myTracklist =  {
     trackPopularity: string;
 }
 
+let listofPlaylists: myPlaylistArray = { list: [] }; // Initialize as an empty array
+
 //Initial values for the playlists
 var playlistID = "37i9dQZF1DX4xuWVBs4FgJ";
 var playlistID2 = "59XMuGvjGqOINdEGGos9NZ";
@@ -54,7 +56,7 @@ if (!code) {
     populatePlaylists(playlists);
 
     //intializing the list of playlists
-    let listofPlaylists: myPlaylistArray = { list: [] }; // Initialize as an empty array
+    //let listofPlaylists: myPlaylistArray = { list: [] }; // Initialize as an empty array
 
     let playlist = await getPlaylist(accessToken, playlistID);
     listofPlaylists = populateArray(playlist,listofPlaylists);
@@ -269,34 +271,45 @@ ModuleRegistry.register(ClientSideRowModelModule);
 
 class SimpleGrid {
     private gridOptions: GridOptions = <GridOptions>{};
+    private listofPlaylists: myPlaylistArray;
 
-    constructor() {
+    constructor(listofPlaylists: myPlaylistArray) {
+        this.listofPlaylists = listofPlaylists;
+
         this.gridOptions = {
             columnDefs: this.createColumnDefs(),
             rowData: this.createRowData()
         };
 
-        let eGridDiv:HTMLElement = <HTMLElement>document.querySelector('#myGrid');
+        let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#myGrid');
         let api = createGrid(eGridDiv, this.gridOptions);
     }
 
     // specify the columns
     private createColumnDefs() {
         return [
-            { field: "make" },
-            { field: "model" },
-            { field: "price" }
+            { field: "trackName", filter: true },
+            { field: "trackArtist" },
+            { field: "trackPopularity" }
         ];
     }
 
     // specify the data
     private createRowData() {
-        return [
-            { make: "Toyota", model: "Celica", price: 35000 },
-            { make: "Ford", model: "Mondeo", price: 32000 },
-            { make: "Porsche", model: "Boxster", price: 72000 }
-        ];
+        // Retrieve playlist tracks from the listofPlaylists array and format them for the grid
+        let rowData: any[] = [];
+        for (let playlist of this.listofPlaylists.list) {
+            for (let track of playlist.tracks) {
+                rowData.push({
+                    trackName: track.trackName,
+                    trackArtist: track.trackArtist,
+                    trackPopularity: track.trackPopularity
+                });
+            }
+        }
+        return rowData;
     }
 }
 
-new SimpleGrid();
+// After fetching the playlists and populating the array, create a new instance of SimpleGrid
+new SimpleGrid(listofPlaylists);
