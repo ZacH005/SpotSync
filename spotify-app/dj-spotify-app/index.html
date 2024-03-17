@@ -5,7 +5,7 @@
       <link rel="stylesheet" href="css/style.css" />
       <title>DJing Playlist App</title>
 
-      
+      <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
       <script src="https://sdk.scdn.co/spotify-player.js"></script>
       <script defer src="src/script.ts" type="module"></script>
       <script>
@@ -65,7 +65,7 @@
       <button id="skipSongButton">Skip To Next Track</button>
       <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = "BQCtUm45Y2-9z9GVQDPqXhvF8n4x_9HI6V8JAmV8PW3506KJZSBdaKSsYnJUck4qAoML_yaO-t-NU86l90djG9FoL-tuMbgy7gYIREoLVms2o_1Hf64gkFQInUI3vpOWrDwKmNibNXyY3bq7_ZSovtlzcgHlvrZ0QLcuwFCxBsDeZJhF3iuTPNJlAA1_OXQkbr_aZmvAfOULtg";
+            const token = "BQCfpJ9HHkO1QvRYYh5sr3eFO6qIavIerhG00AlOY0yuNhlteq7-rdYJReQWMeOqEW2RBiWJkhgUQWPwy-YNfEyWUHLSfk0dgQpBNsYx7TV4jaMizlRXKNyBAHwaTV-O16wjA80YGZJmZ0iqE38HmtWlaRf6vIBk3wipiL6e-ted1K48N_U2D1YtSkbsek52npP-Ay4DzKlD1w";
             const player = new Spotify.Player({
                 name: 'Web Playback',
                 getOAuthToken: cb => { cb(token); },
@@ -130,6 +130,7 @@
       </form>
       <p id="result"></p>
     </section>
+    <div id="myGrid"></div>
     <section id="playlist">
       <h1>Spotify Playlist</h1>
       <table>

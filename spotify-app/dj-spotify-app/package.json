@@ -10,13 +10,31 @@
     "start": "node src/index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "grid",
+    "typescript",
+    "webpack"
+  ],
   "devDependencies": {
-    "vite": "^5.0.8"
+    "concurrently": "^8.2.2",
+    "css-loader": "^6.10.0",
+    "html-webpack-plugin": "^5.6.0",
+    "sass": "^1.72.0",
+    "sass-loader": "^14.1.1",
+    "style-loader": "^3.3.4",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.2",
+    "vite": "^5.0.8",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.3"
   },
   "dependencies": {
+    "@ag-grid-community/client-side-row-model": "^31.1.1",
     "@spotify/web-api-ts-sdk": "^1.2.0",
     "@types/spotify-web-playback-sdk": "^0.1.19",
     "ag-grid-community": "^31.1.1",
+    "ag-grid-enterprise": "^31.1.1",
     "ag-grid-react": "^31.1.1",
     "prompt-sync": "^4.2.0"
   }

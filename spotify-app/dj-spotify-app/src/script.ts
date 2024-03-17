@@ -1,6 +1,8 @@
 // As it is a single page document we detect a callback from Spotify by checking for the hash fragment
 //Imports specific functions from an external module.
 import { redirectToAuthCodeFlow, getAccessToken } from "./authCodeWithPkce.ts";
+import { createGrid, GridOptions, ModuleRegistry } from "@ag-grid-community/core";
+import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 
 //this is the appID
 const clientId = "29ef0e92931e4445a605be8b6f3b674e";
@@ -165,7 +167,7 @@ function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myP
 
     return listofPlaylists;
 }
-    
+
 function populatePlaylist(playlist: Playlist, trackNames: myPlaylistArray) {
 
     // Retrieves HTML element "playlist_track_names" and casts it as a table element
@@ -262,3 +264,39 @@ if (userIDElement) {
     // Handle the case when the element is not found
     userID = "theblazingamer";
 }
+
+ModuleRegistry.register(ClientSideRowModelModule);
+
+class SimpleGrid {
+    private gridOptions: GridOptions = <GridOptions>{};
+
+    constructor() {
+        this.gridOptions = {
+            columnDefs: this.createColumnDefs(),
+            rowData: this.createRowData()
+        };
+
+        let eGridDiv:HTMLElement = <HTMLElement>document.querySelector('#myGrid');
+        let api = createGrid(eGridDiv, this.gridOptions);
+    }
+
+    // specify the columns
+    private createColumnDefs() {
+        return [
+            { field: "make" },
+            { field: "model" },
+            { field: "price" }
+        ];
+    }
+
+    // specify the data
+    private createRowData() {
+        return [
+            { make: "Toyota", model: "Celica", price: 35000 },
+            { make: "Ford", model: "Mondeo", price: 32000 },
+            { make: "Porsche", model: "Boxster", price: 72000 }
+        ];
+    }
+}
+
+new SimpleGrid();
