@@ -65,7 +65,7 @@
       <button id="skipSongButton">Skip To Next Track</button>
       <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = "BQCfpJ9HHkO1QvRYYh5sr3eFO6qIavIerhG00AlOY0yuNhlteq7-rdYJReQWMeOqEW2RBiWJkhgUQWPwy-YNfEyWUHLSfk0dgQpBNsYx7TV4jaMizlRXKNyBAHwaTV-O16wjA80YGZJmZ0iqE38HmtWlaRf6vIBk3wipiL6e-ted1K48N_U2D1YtSkbsek52npP-Ay4DzKlD1w";
+            const token = "BQDPXfCL3U2IW7zXsAfvqi1VTgZgeuNcevhDos47dCFSB_e_CPA7Qc1BY_mqeK2hiPF-bBSEjAR6ELR2ECVQ10kOO3t0iLLSEb-pn53h4HV7w46I7ExTYDbwYABf4Y_cjxieCfyeVD9_VKq3xjRJqvZ_oATYJd4OCv_FsZNnMylXIf5hn-Aw9thx7PAEjih8ywct8akZWfp8ag";
             const player = new Spotify.Player({
                 name: 'Web Playback',
                 getOAuthToken: cb => { cb(token); },
