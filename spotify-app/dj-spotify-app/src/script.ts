@@ -261,19 +261,19 @@ if (userIDElement) {
 
 ModuleRegistry.register(ClientSideRowModelModule);
 
-class SimpleGrid {
+class PlaylistGrid {
     private gridOptions: GridOptions = <GridOptions>{};
-    private listofPlaylists: myPlaylistArray;
+    private playlist: myPlaylist;
 
-    constructor(listofPlaylists: myPlaylistArray) {
-        this.listofPlaylists = listofPlaylists;
+    constructor(playlist: myPlaylist) {
+        this.playlist = playlist;
 
         this.gridOptions = {
             columnDefs: this.createColumnDefs(),
             rowData: this.createRowData()
         };
 
-        let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#myGrid');
+        let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistGrid_' + playlist.playlistID);
         let api = createGrid(eGridDiv, this.gridOptions);
     }
 
@@ -288,17 +288,15 @@ class SimpleGrid {
 
     // specify the data
     private createRowData() {
-        // Retrieve playlist tracks from the listofPlaylists array and format them for the grid
+        // Retrieve playlist tracks from the playlist and format them for the grid
         let rowData: any[] = [];
-        for (let playlist of this.listofPlaylists.list) {
-            for (let track of playlist.tracks) {
-                rowData.push({
-                    trackName: track.trackName,
-                    trackArtist: track.trackArtist,
-                    trackPopularity: track.trackPopularity,
-                    trackUrl: track.trackUrl // Include track URL in rowData
-                });
-            }
+        for (let track of this.playlist.tracks) {
+            rowData.push({
+                trackName: track.trackName,
+                trackArtist: track.trackArtist,
+                trackPopularity: track.trackPopularity,
+                trackUrl: track.trackUrl // Include track URL in rowData
+            });
         }
         return rowData;
     }
@@ -312,5 +310,7 @@ class SimpleGrid {
     }
 }
 
-// After fetching the playlists and populating the array, create a new instance of SimpleGrid
-new SimpleGrid(listofPlaylists);
+// After fetching the playlists and populating the array, create a new instance of PlaylistGrid for each playlist
+for (let playlist of listofPlaylists.list) {
+    new PlaylistGrid(playlist);
+}

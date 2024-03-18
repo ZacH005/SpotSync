@@ -121,3 +121,12 @@ table, th, td {
   background-color: rgb(61, 61, 61); /* Light gray background for header */
 }
 
+.grid-container {
+  display: flex;
+  justify-content: space-between; /* Adjust as needed */
+  margin-bottom: 20px; /* Optional: Add margin between grids */
+}
+.playlist-grid {
+  flex: 0 0 48%; /* Adjust width of each grid */
+  
+}
