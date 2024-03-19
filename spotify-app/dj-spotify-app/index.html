@@ -16,14 +16,6 @@
         } else {
             x.style.display = 'none';
         }}
-
-        // function inputPlaylist()    {
-        //   let playlistIdentification = (document.getElementById('addPlaylist')).value;
-          
-        //   let resultElement = document.getElementById('result');
-        //   if (resultElement) {
-        //       resultElement.textContent = "Playlist ID:"+playlistIdentification;
-        //   }}
       </script>
   </head>
 
@@ -130,15 +122,6 @@
       </form>
       <p id="result"></p>
     </section>
-
-    <!-- <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px;width: 900px" class="ag-theme-quartz-dark"></div>
-    <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px;width: 900px" class="ag-theme-alpine-dark"></div> -->
-
-    <!-- <div class="grid-container">
-      <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-      <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-    </div>
-     -->
     
     <section id="playlist">
       <h1>Spotify Playlist</h1>
@@ -149,75 +132,6 @@
         <!-- Playlist Grid 2 -->
         <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
       </div>
-
-      <!-- <table>
-        <tbody id="playlist_names">
-          <tr>
-            <th>Num of Tracks:</th>
-            <th>Playlist Name:</th>
-            <th>Picture:</th>
-            <th>Popularity:</th>
-          </tr>
-        </tbody>
-        <tbody id="playlist_track_names">
-          <tr>
-            <th onclick="sortTable(0)">Num:</th>
-            <th>Track Name:</th>
-            <th>Artist:</th>
-            <th onclick="sortTable(3)">Popularity:</th>
-          </tr>
-          <script>
-            function sortTable(n) {
-              var table, rows, switching, i, x, y, shouldSwitch;
-              table = document.getElementById("playlist_track_names");
-              switching = true;
-
-              /*Make a loop that will continue until
-              no switching has been done:*/
-              while (switching) {
-
-                //start by saying: no switching is done:
-                switching = false;
-                rows = table.rows;
-
-                /*Loop through all table rows (except the
-                first, which contains table headers):*/
-                for (i = 1; i < (rows.length - 1); i++) {
-
-                  //start by saying there should be no switching:
-                  shouldSwitch = false;
-
-                  /*Get the two elements you want to compare,
-                  one from current row and one from the next:*/
-                  x = rows[i].getElementsByTagName("TD")[n];
-                  y = rows[i + 1].getElementsByTagName("TD")[n];
-
-                  if (x|y != null){
-
-                    //check if the two rows should switch place:
-                    if (Number(x.innerHTML) < Number(y.innerHTML)) {
-                      
-                      //if so, mark as a switch and break the loop:
-                      shouldSwitch = true;
-                      break;
-                    }
-                  }
-                  else{
-                    break;
-                  }
-                }
-                if (shouldSwitch) {
-
-                  /*If a switch has been marked, make the switch
-                  and mark that a switch has been done:*/
-                  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                  switching = true;
-                }
-              }
-            }
-          </script>
-        </tbody>
-      </table> -->
     </section>
   </body>
 </html>
