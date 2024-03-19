@@ -65,7 +65,7 @@
       <button id="skipSongButton">Skip To Next Track</button>
       <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = "BQDPXfCL3U2IW7zXsAfvqi1VTgZgeuNcevhDos47dCFSB_e_CPA7Qc1BY_mqeK2hiPF-bBSEjAR6ELR2ECVQ10kOO3t0iLLSEb-pn53h4HV7w46I7ExTYDbwYABf4Y_cjxieCfyeVD9_VKq3xjRJqvZ_oATYJd4OCv_FsZNnMylXIf5hn-Aw9thx7PAEjih8ywct8akZWfp8ag";
+            const token = "BQD0l16nqI-xxYfA69fqcW0sWDFoTL6ljp8ag9ezsVeFBtznWfO1_3xdVTiH0ueS2wQwXhGP5sqFspTWbv5Pqb7cV8rdW3B9AF7ryw0L_3xvkKMPJRJwF7ssazwWqY-x_E4XvsWLGr8R1P6M2ifBzsLAhbpKg9GK5O43X9mmKN0GDpiRvkXpAKRBL1_oUAk7Eqdtxl787xeO0A";
             const player = new Spotify.Player({
                 name: 'Web Playback',
                 getOAuthToken: cb => { cb(token); },
@@ -134,16 +134,23 @@
     <!-- <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px;width: 900px" class="ag-theme-quartz-dark"></div>
     <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px;width: 900px" class="ag-theme-alpine-dark"></div> -->
 
-    <div class="grid-container">
-      <!-- Playlist Grid 1 -->
+    <!-- <div class="grid-container">
       <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-      <!-- Playlist Grid 2 -->
       <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
     </div>
+     -->
     
     <section id="playlist">
       <h1>Spotify Playlist</h1>
-      <table>
+
+      <div class="grid-container">
+        <!-- Playlist Grid 1 -->
+        <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+        <!-- Playlist Grid 2 -->
+        <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+      </div>
+
+      <!-- <table>
         <tbody id="playlist_names">
           <tr>
             <th>Num of Tracks:</th>
@@ -210,7 +217,7 @@
             }
           </script>
         </tbody>
-      </table>
+      </table> -->
     </section>
   </body>
 </html>

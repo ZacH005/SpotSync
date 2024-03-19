@@ -33,6 +33,11 @@ type myTracklist =  {
     trackUrl: string;
     trackID: string;
     trackPopularity: string;
+    trackDanceability: number;
+    trackEnergy: number;
+    trackInstrumentalness: number;
+    trackTempo: number;
+    trackValence: number;
 }
 
 let listofPlaylists: myPlaylistArray = { list: [] }; // Initialize as an empty array
@@ -64,7 +69,7 @@ if (!code) {
     playlist = await getPlaylist(accessToken, playlistID2);
     listofPlaylists = populateArray(playlist,listofPlaylists);
 
-    populatePlaylist(playlist,listofPlaylists);
+    // populatePlaylist(playlist,listofPlaylists);
 }
 
 //Makes an asynchronous HTTP request to the Spotify API to fetch user profile information.
@@ -136,6 +141,7 @@ async function getPlaylist(code: string, playlistID: string): Promise<Playlist> 
 function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myPlaylistArray  {
     
     let trackNames: myPlaylistArray = { list: [] }; // Initialize as an empty array
+    var trackIDs = "";
 
     let myList: myPlaylist = {
         playlistName: playlist.name,
@@ -153,48 +159,81 @@ function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myP
             trackUrl: playlist.tracks.items[i].track.external_urls.spotify,
             trackID: playlist.tracks.items[i].track.id,
             trackPopularity: playlist.tracks.items[i].track.popularity,
+            trackDanceability: 0, 
+            trackEnergy: 0,
+            trackInstrumentalness: 0,
+            trackTempo: 0,
+            trackValence: 0,
         }
         myList.tracks.push(track)
+        trackIDs += playlist.tracks.items[i].track.id + ",";
+
     }
     
     listofPlaylists.list.push(myList); // Use push to add the track to the array
+    fetchTrackInfo(accessToken, trackIDs, playlist);
 
     return listofPlaylists;
 }
+async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist): Promise<any> {
+    try {
+        const result = await fetch("https://api.spotify.com/v1/audio-features?ids=" + trackIds, {
+            method: "GET", headers: { Authorization: `Bearer ${code}` }
+        });
 
-function populatePlaylist(playlist: Playlist, trackNames: myPlaylistArray) {
-
-    // Retrieves HTML element "playlist_track_names" and casts it as a table element
-    const playlistTrackNames = document.getElementById("playlist_track_names")! as HTMLTableElement;
-    const playlistNames = document.getElementById("playlist_names")! as HTMLTableElement;
-    
-
-    //Iterates over playlists when populating HTML elements.
-    for (let i in trackNames.list) {
-        const playlistItem = trackNames.list[i];
-
-        playlistTrackNames.innerHTML += "<table>";
-
-        //Modifies the inner HTML of an element to wrap playlist names in an ordered list.
-        playlistNames.innerHTML += "<tr><td>"+playlistItem.playlistTotal.toString()+"</td>"
-        +"<td>"+"<a target='spotifytab' href=" + playlistItem.playlistUrl + ">" 
-        +playlistItem.playlistName+"</a></td>"
-        +"<td><img class='logo' src="+playlistItem.playlistImageUrl+"></td></tr>";
-        
-        for (let j in playlistItem.tracks) {
-            const track = playlistItem.tracks[j];
-
-            playlistTrackNames.innerHTML += "<tr><td>"
-                + j.toString() + "</td><td>"
-                + "<a target='spotifytab' href=" + track.trackUrl + ">" 
-                + track.trackName + "</a></td><td>"
-                + track.trackArtist + "</td><td>"
-                + track.trackPopularity + "</td></tr>";
+        const data = await result.json();
+        // As the additional attributs are returned in the same order, the same array index can be used
+        for (let i = 0; i in playlist.tracks.items; i++) {
+            const trackData = data.audio_features[i];
+            if (trackData) {
+                // Update track attributes based on fetched data
+                playlist.tracks.items[i].trackDanceability = trackData.danceability;
+                playlist.tracks.items[i].trackEnergy = trackData.energy;
+                playlist.tracks.items[i].trackInstrumentalness = trackData.instrumentalness;
+                playlist.tracks.items[i].trackTempo = trackData.tempo;
+                playlist.tracks.items[i].trackValence = trackData.valence;
+            }
         }
-        playlistTrackNames.innerHTML += "</table>";
-
+        return data;
+    } catch (error) {
+        console.error("Error fetching tracks info:", error);
+        throw error;
     }
 }
+
+// function populatePlaylist(playlist: Playlist, trackNames: myPlaylistArray) {
+
+//     // Retrieves HTML element "playlist_track_names" and casts it as a table element
+//     const playlistTrackNames = document.getElementById("playlist_track_names")! as HTMLTableElement;
+//     const playlistNames = document.getElementById("playlist_names")! as HTMLTableElement;
+    
+
+//     //Iterates over playlists when populating HTML elements.
+//     for (let i in trackNames.list) {
+//         const playlistItem = trackNames.list[i];
+
+//         playlistTrackNames.innerHTML += "<table>";
+
+//         //Modifies the inner HTML of an element to wrap playlist names in an ordered list.
+//         playlistNames.innerHTML += "<tr><td>"+playlistItem.playlistTotal.toString()+"</td>"
+//         +"<td>"+"<a target='spotifytab' href=" + playlistItem.playlistUrl + ">" 
+//         +playlistItem.playlistName+"</a></td>"
+//         +"<td><img class='logo' src="+playlistItem.playlistImageUrl+"></td></tr>";
+        
+//         for (let j in playlistItem.tracks) {
+//             const track = playlistItem.tracks[j];
+
+//             playlistTrackNames.innerHTML += "<tr><td>"
+//                 + j.toString() + "</td><td>"
+//                 + "<a target='spotifytab' href=" + track.trackUrl + ">" 
+//                 + track.trackName + "</a></td><td>"
+//                 + track.trackArtist + "</td><td>"
+//                 + track.trackPopularity + "</td></tr>";
+//         }
+//         playlistTrackNames.innerHTML += "</table>";
+
+//     }
+// }
 
 const playlistIDElement = document.getElementById('addPlaylist') as HTMLInputElement;
 const submitPlaylistButton = document.getElementById('submitPlaylist') as HTMLInputElement;
@@ -220,7 +259,7 @@ if (playlistIDElement) {
             const updatedList = populateArray(playlist, listofPlaylists);
 
             // Update UI or perform any other actions here
-            populatePlaylist(playlist, updatedList);
+            // populatePlaylist(playlist, updatedList);
         } catch (error) {
             console.error("Error fetching playlist:", error);
             // Handle error appropriately
@@ -272,6 +311,7 @@ class PlaylistGrid {
             columnDefs: this.createColumnDefs(),
             rowData: this.createRowData()
         };
+        
 
         let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistGrid_' + playlist.playlistID);
         let api = createGrid(eGridDiv, this.gridOptions);
@@ -280,7 +320,7 @@ class PlaylistGrid {
     // specify the columns
     private createColumnDefs() {
         return [
-            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer },
+            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, dndSource: true },
             { headerName: "Artist", field: "trackArtist" },
             { headerName: "Popularity", field: "trackPopularity" }
         ];

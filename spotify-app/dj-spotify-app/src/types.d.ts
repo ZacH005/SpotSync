@@ -65,5 +65,17 @@ interface Playlist  {
     images: Image[];
 }
 
+interface TrackInfo{
+    audio_features: [
+        {
+            danceability: number;
+            energy: number;
+            instrumentalness: number;
+            tempo: number;
+            valence: number;
+        }
+    ]
+}
+
 
 
