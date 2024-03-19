@@ -143,57 +143,89 @@ function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myP
     let trackNames: myPlaylistArray = { list: [] }; // Initialize as an empty array
     var trackIDs = "";
 
-    let myList: myPlaylist = {
-        playlistName: playlist.name,
-        playlistUrl: playlist.external_urls.spotify,
-        playlistID: playlist.id,
-        playlistImageUrl: playlist.images[0].url,
-        playlistTotal: playlist.tracks.total,
-        tracks: [],
-    }
+    // let myList: myPlaylist = {
+    //     playlistName: playlist.name,
+    //     playlistUrl: playlist.external_urls.spotify,
+    //     playlistID: playlist.id,
+    //     playlistImageUrl: playlist.images[0].url,
+    //     playlistTotal: playlist.tracks.total,
+    //     tracks: [],
+    // }
 
     for (let i in playlist.tracks.items) {
-        let track: myTracklist =  {
-            trackName: playlist.tracks.items[i].track.name,
-            trackArtist: playlist.tracks.items[i].track.album.artists[0].name,
-            trackUrl: playlist.tracks.items[i].track.external_urls.spotify,
-            trackID: playlist.tracks.items[i].track.id,
-            trackPopularity: playlist.tracks.items[i].track.popularity,
-            trackDanceability: 0, 
-            trackEnergy: 0,
-            trackInstrumentalness: 0,
-            trackTempo: 0,
-            trackValence: 0,
-        }
-        myList.tracks.push(track)
+        // let track: myTracklist =  {
+        //     trackName: playlist.tracks.items[i].track.name,
+        //     trackArtist: playlist.tracks.items[i].track.album.artists[0].name,
+        //     trackUrl: playlist.tracks.items[i].track.external_urls.spotify,
+        //     trackID: playlist.tracks.items[i].track.id,
+        //     trackPopularity: playlist.tracks.items[i].track.popularity,
+        //     trackDanceability: 0, 
+        //     trackEnergy: 0,
+        //     trackInstrumentalness: 0,
+        //     trackTempo: 0,
+        //     trackValence: 0,
+        // }
+        // myList.tracks.push(track)
         trackIDs += playlist.tracks.items[i].track.id + ",";
 
     }
     
-    listofPlaylists.list.push(myList); // Use push to add the track to the array
-    fetchTrackInfo(accessToken, trackIDs, playlist);
+    // listofPlaylists.list.push(myList); // Use push to add the track to the array
+    fetchTrackInfo(accessToken, trackIDs, playlist, listofPlaylists);
 
     return listofPlaylists;
 }
-async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist): Promise<any> {
+async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist, listofPlaylists: myPlaylistArray): Promise<any> {
     try {
         const result = await fetch("https://api.spotify.com/v1/audio-features?ids=" + trackIds, {
             method: "GET", headers: { Authorization: `Bearer ${code}` }
         });
 
         const data = await result.json();
+        
+        let myList: myPlaylist = {
+            playlistName: playlist.name,
+            playlistUrl: playlist.external_urls.spotify,
+            playlistID: playlist.id,
+            playlistImageUrl: playlist.images[0].url,
+            playlistTotal: playlist.tracks.total,
+            tracks: [],
+        }
+
         // As the additional attributs are returned in the same order, the same array index can be used
+        console.error("Playlist has provided data:")
         for (let i = 0; i in playlist.tracks.items; i++) {
             const trackData = data.audio_features[i];
             if (trackData) {
-                // Update track attributes based on fetched data
-                playlist.tracks.items[i].trackDanceability = trackData.danceability;
-                playlist.tracks.items[i].trackEnergy = trackData.energy;
-                playlist.tracks.items[i].trackInstrumentalness = trackData.instrumentalness;
-                playlist.tracks.items[i].trackTempo = trackData.tempo;
-                playlist.tracks.items[i].trackValence = trackData.valence;
+                console.error("Track Attributes are given:", i, trackData.energy, trackData.instrumentalness, trackData.tempo, trackData.valence);
+                let track: myTracklist =  {
+                    trackName: playlist.tracks.items[i].track.name,
+                    trackArtist: playlist.tracks.items[i].track.album.artists[0].name,
+                    trackUrl: playlist.tracks.items[i].track.external_urls.spotify,
+                    trackID: playlist.tracks.items[i].track.id,
+                    trackPopularity: playlist.tracks.items[i].track.popularity,
+                    trackDanceability: trackData.danceability, 
+                    trackEnergy: trackData.energy,
+                    trackInstrumentalness: trackData.instrumentalness,
+                    trackTempo: trackData.tempo,
+                    trackValence: trackData.valence,
+                }
+                myList.tracks.push(track)
+
+                // track.trackDanceability = trackData.danceability; 
+                // track.trackEnergy = trackData.energy;
+                // track.trackInstrumentalness = trackData.instrumentalness;
+                // track.trackTempo = trackData.tempo;
+                // track.trackValence = trackData.valence;
             }
         }
+
+        listofPlaylists.list.push(myList);
+        // After fetching the playlists and populating the array, create a new instance of PlaylistGrid for each playlist
+        for (let playlist of listofPlaylists.list) {
+            console.log("Creating grid for playlist:", playlist.playlistID, listofPlaylists.list, playlist);
+            new PlaylistGrid(playlist);
+}
         return data;
     } catch (error) {
         console.error("Error fetching tracks info:", error);
@@ -315,6 +347,12 @@ class PlaylistGrid {
 
         let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistGrid_' + playlist.playlistID);
         let api = createGrid(eGridDiv, this.gridOptions);
+        console.log("Container element:", eGridDiv); // Log the container element
+
+        if (!eGridDiv) {
+            console.error("Container element not found for playlist:", playlist.playlistID);
+            return; // Return early if the container element is not found
+        }
     }
 
     // specify the columns
@@ -322,7 +360,12 @@ class PlaylistGrid {
         return [
             { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, dndSource: true },
             { headerName: "Artist", field: "trackArtist" },
-            { headerName: "Popularity", field: "trackPopularity" }
+            { headerName: "Popularity", field: "trackPopularity" },
+            { headerName: "Danceability", field: "trackDanceability" }, 
+            { headerName: "Energy", field: "trackEnergy" }, 
+            { headerName: "Instrumentalness", field: "trackInstrumentalness" }, 
+            { headerName: "Tempo", field: "trackTempo" }, 
+            { headerName: "Valence", field: "trackValence" }, 
         ];
     }
 
@@ -335,6 +378,11 @@ class PlaylistGrid {
                 trackName: track.trackName,
                 trackArtist: track.trackArtist,
                 trackPopularity: track.trackPopularity,
+                trackDanceability: track.trackDanceability,
+                trackEnergy: track.trackEnergy,
+                trackInstrumentalness: track.trackInstrumentalness,
+                trackTempo: track.trackTempo,
+                trackValence: track.trackValence,
                 trackUrl: track.trackUrl // Include track URL in rowData
             });
         }
@@ -350,7 +398,4 @@ class PlaylistGrid {
     }
 }
 
-// After fetching the playlists and populating the array, create a new instance of PlaylistGrid for each playlist
-for (let playlist of listofPlaylists.list) {
-    new PlaylistGrid(playlist);
-}
+
