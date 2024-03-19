@@ -89,23 +89,6 @@ async function fetchProfile(code: string): Promise<UserProfile> {
     }
 }
 
-async function createPlaylist(code: string): Promise<UserProfile> {
-    try{
-        const result = await fetch("https://api.spotify.com/v1/users/" + userID + "/playlists", {
-            method: "POST", headers: { Authorization: `Bearer ${code}` }, 
-            body: JSON.stringify({
-                name: "New Playlist",
-                description: "Empty Playlist",
-                public: true })
-            });
-
-        return await result.json();
-    } catch (error) {
-        console.error("Error creating playlist:", error);
-        throw error; // Rethrow the error to propagate it to the caller
-    }
-}
-
 function populateUI(profile: UserProfile) {
 
     //Updates the inner text of a DOM element with the user's data
@@ -159,7 +142,7 @@ async function getPlaylist(code: string, playlistID: string): Promise<Playlist> 
 
 function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myPlaylistArray  {
     
-    let trackNames: myPlaylistArray = { list: [] }; // Initialize as an empty array
+    // let trackNames: myPlaylistArray = { list: [] }; // Initialize as an empty array
     var trackIDs = "";
 
     for (let i in playlist.tracks.items) {
@@ -171,6 +154,7 @@ function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myP
 
     return listofPlaylists;
 }
+
 async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist, listofPlaylists: myPlaylistArray): Promise<any> {
     try {
         const result = await fetch("https://api.spotify.com/v1/audio-features?ids=" + trackIds, {
@@ -189,11 +173,11 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
         }
 
         // As the additional attributs are returned in the same order, the same array index can be used
-        console.error("Playlist has provided data:")
+        console.log("Playlist has provided data:")
         for (let i = 0; i in playlist.tracks.items; i++) {
             const trackData = data.audio_features[i];
             if (trackData) {
-                console.error("Track Attributes are given:", i, trackData.energy, trackData.instrumentalness, trackData.tempo, trackData.valence);
+                console.log("Track Attributes are given:", i, trackData.energy, trackData.instrumentalness, trackData.tempo, trackData.valence);
                 let track: myTracklist =  {
                     trackName: playlist.tracks.items[i].track.name,
                     trackArtist: playlist.tracks.items[i].track.album.artists[0].name,
@@ -293,8 +277,6 @@ class PlaylistGrid {
     private gridOptions: GridOptions = <GridOptions>{};
     private playlist: myPlaylist;
 
-    
-
     constructor(playlist: myPlaylist) {
         this.playlist = playlist;
 
@@ -360,3 +342,63 @@ class PlaylistGrid {
 }
 
 
+// async function createPlaylist(accessToken: string, userID: string): Promise<any> {
+//     try {
+//         const result = await fetch("https://api.spotify.com/v1/users/" + userID + "/playlists", {
+//             method: "POST",
+//             headers: {
+//                 Authorization: `Bearer ${accessToken}`,
+//                 "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({
+//                 name: "New Playlist",
+//                 description: "Empty Playlist",
+//                 public: true
+//             })
+//         });
+
+//         const newPlaylistData = await result.json();
+
+//         const playlist = newPlaylistData.id;
+
+//         populateArray(playlist, listofPlaylists);
+
+//         return newPlaylistData;
+//     } catch (error) {
+//         console.error("Error creating playlist:", error);
+//         throw error; // Rethrow the error to propagate it to the caller
+//     }
+// }
+
+
+const createPlaylistButton = document.getElementById('createPlaylist') as HTMLInputElement;
+
+createPlaylistButton.addEventListener('click', async () => {
+    await createPlaylist(accessToken, userID);
+});
+
+async function createPlaylist(accessToken: string, userID: string): Promise<any> {
+    try {
+        const response = await fetch(`https://api.spotify.com/v1/users/${userID}/playlists`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: "New Playlist",
+                public: true // Adjust as needed, whether the playlist should be public or not
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create playlist');
+        }
+
+        const playlistData = await response.json();
+        return playlistData;
+    } catch (error) {
+        console.error('Error creating playlist:', error);
+        throw error;
+    }
+}

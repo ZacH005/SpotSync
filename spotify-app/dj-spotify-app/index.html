@@ -57,7 +57,7 @@
       <button id="skipSongButton">Skip To Next Track</button>
       <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = "BQChNIAN7u9JtjZ-7wiGPpKg0n5rsnn0MJ72zlPQk4RJeUOaBbXfuHSHBvfBfa3BzHmvVQhq8SFlqR3rceHrVILtaV4PZAjQ0BTW_WybzDr0mS_b41ErqxgJWujCzH3di4XHUfFS5QAWKVMOmQGjpMchfRSpenw_xXuOO4K3N6_dNkKSMIQKXmYLYE-DhHNU6ABaLfJ1G_QfOQ";
+            const token = "BQCyylhoy16BW4816Ygeirp5BuepZ7DdhN6NUkY_Wtj91V3vI-Suk-LtYebxpbwDMfJoWC6MpIZiNDOPxcR_VEzmPgqiWfEJPMOgj-QmBBEpNjBtgO-qTlHVT_P8FqAsQs16pNqFVe0eEZNhTEH09WRo6vrUv8vOfPz4jIrKsRLvR5USoqD7Ka72u4Vqfwr_UGSz_HLMjw6LbQ";
             const player = new Spotify.Player({
                 name: 'Web Playback',
                 getOAuthToken: cb => { cb(token); },
@@ -125,6 +125,8 @@
     
     <section id="playlist">
       <h1>Spotify Playlist</h1>
+
+      <input id="createPlaylist" type="button" value="Create New Playlist">
 
       <div class="grid-container">
         <!-- Playlist Grid 1 -->
