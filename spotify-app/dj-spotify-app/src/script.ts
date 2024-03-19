@@ -3,6 +3,8 @@
 import { redirectToAuthCodeFlow, getAccessToken } from "./authCodeWithPkce.ts";
 import { createGrid, GridOptions, ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
+import { RowDragComp } from "ag-grid-community/dist/lib/rendering/row/rowDragComp";
+import { RowDragFeature } from "ag-grid-community/dist/lib/gridBodyComp/rowDragFeature";
 
 //this is the appID
 const clientId = "29ef0e92931e4445a605be8b6f3b674e";
@@ -83,6 +85,23 @@ async function fetchProfile(code: string): Promise<UserProfile> {
         return await result.json();
     } catch (error) {
         console.error("Error fetching profile:", error);
+        throw error; // Rethrow the error to propagate it to the caller
+    }
+}
+
+async function createPlaylist(code: string): Promise<UserProfile> {
+    try{
+        const result = await fetch("https://api.spotify.com/v1/users/" + userID + "/playlists", {
+            method: "POST", headers: { Authorization: `Bearer ${code}` }, 
+            body: JSON.stringify({
+                name: "New Playlist",
+                description: "Empty Playlist",
+                public: true })
+            });
+
+        return await result.json();
+    } catch (error) {
+        console.error("Error creating playlist:", error);
         throw error; // Rethrow the error to propagate it to the caller
     }
 }
@@ -274,6 +293,8 @@ class PlaylistGrid {
     private gridOptions: GridOptions = <GridOptions>{};
     private playlist: myPlaylist;
 
+    
+
     constructor(playlist: myPlaylist) {
         this.playlist = playlist;
 
@@ -291,12 +312,14 @@ class PlaylistGrid {
             console.error("Container element not found for playlist:", playlist.playlistID);
             return; // Return early if the container element is not found
         }
+
+
     }
 
     // specify the columns
     private createColumnDefs() {
         return [
-            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, dndSource: true },
+            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, dndSource: true, rowDrag: true },
             { headerName: "Artist", field: "trackArtist" },
             { headerName: "Popularity", field: "trackPopularity" },
             { headerName: "Danceability", field: "trackDanceability" }, 
@@ -326,8 +349,6 @@ class PlaylistGrid {
         }
         return rowData;
     }
-
-    
 
     // Custom cell renderer to render track names as hyperlinks
     private customCellRenderer(params: any) {
