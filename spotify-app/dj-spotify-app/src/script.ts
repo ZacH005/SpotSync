@@ -1,7 +1,7 @@
 // As it is a single page document we detect a callback from Spotify by checking for the hash fragment
 //Imports specific functions from an external module.
 import { redirectToAuthCodeFlow, getAccessToken } from "./authCodeWithPkce.ts";
-import { createGrid, GridOptions, ModuleRegistry } from "@ag-grid-community/core";
+import { GridApi, createGrid, GridOptions, ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RowDragComp } from "ag-grid-community/dist/lib/rendering/row/rowDragComp";
 import { RowDragFeature } from "ag-grid-community/dist/lib/gridBodyComp/rowDragFeature";
@@ -273,35 +273,35 @@ if (userIDElement) {
 
 ModuleRegistry.register(ClientSideRowModelModule);
 
+let gridApis: GridApi[] = []; // Define gridApis as an array of GridApi
+
 class PlaylistGrid {
     private gridOptions: GridOptions = <GridOptions>{};
     private playlist: myPlaylist;
+    private gridApi;
 
     constructor(playlist: myPlaylist) {
         this.playlist = playlist;
 
         this.gridOptions = {
             columnDefs: this.createColumnDefs(),
-            rowData: this.createRowData()
+            rowData: this.createRowData(),
+            rowDragManaged: true,
+            //onRowDragMove: this.onRowDragMove.bind(this),
+            onRowDragEnd: this.onRowDragEnd.bind(this),
+            onRowDragLeave: this.onRowDragLeave.bind(this),
         };
-        
 
         let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistGrid_' + playlist.playlistID);
-        let api = createGrid(eGridDiv, this.gridOptions);
         console.log("Container element:", eGridDiv); // Log the container element
-
-        if (!eGridDiv) {
-            console.error("Container element not found for playlist:", playlist.playlistID);
-            return; // Return early if the container element is not found
-        }
-
-
+        this.gridApi = createGrid(eGridDiv, this.gridOptions);
+        gridApis.push(this.gridApi); // Store grid API for later use
     }
 
     // specify the columns
     private createColumnDefs() {
         return [
-            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, dndSource: true, rowDrag: true },
+            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, rowDrag: true },
             { headerName: "Artist", field: "trackArtist" },
             { headerName: "Popularity", field: "trackPopularity" },
             { headerName: "Danceability", field: "trackDanceability" }, 
@@ -339,7 +339,48 @@ class PlaylistGrid {
         }
         return null;
     }
+
+    // // Row drag move event handler
+    // private onRowDragMove(event) {
+    //     
+    // }
+
+    // Row drag end event handler
+    private onRowDragEnd(event) {
+        // This event is triggered when the row dragging ends (regardless of where it ends up)
+        console.log("Row dragging ended:", event.node.data);
+
+        // Get the target grid API
+        const targetGridApi = gridApis.find(api => api.getGridId() === event.overNode.gridId);
+
+        // Check if targetGridApi is defined and the row is dropped onto another grid
+        if (targetGridApi && event.overIndex >= 0) {
+            // Get the row data from the source grid
+            const sourceRowData = event.node.data;
+
+            // Add the row to the target grid
+            targetGridApi.applyTransaction({ add: [sourceRowData] });
+        }
+    }
+
+    // Row drag leave event handler
+    private onRowDragLeave(event) {
+        // This event is triggered when the row is dragged out of the grid
+        console.log("Row dragged out of the grid:", event.node.data);
+
+        const sourceRowData = event.node.data;
+
+        // Add the row to the target grid
+        const targetGridId = event.overIndex >= 0 ? event.overNode.gridId : null;
+        if (targetGridId) {
+            const targetGridApi = gridApis.find(api => api.getGridId() === targetGridId);
+            if (targetGridApi) {
+                targetGridApi.applyTransaction({ add: [sourceRowData] });
+            }
+        }
+    }
 }
+
 
 
 // async function createPlaylist(accessToken: string, userID: string): Promise<any> {
