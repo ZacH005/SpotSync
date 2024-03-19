@@ -143,31 +143,8 @@ function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myP
     let trackNames: myPlaylistArray = { list: [] }; // Initialize as an empty array
     var trackIDs = "";
 
-    // let myList: myPlaylist = {
-    //     playlistName: playlist.name,
-    //     playlistUrl: playlist.external_urls.spotify,
-    //     playlistID: playlist.id,
-    //     playlistImageUrl: playlist.images[0].url,
-    //     playlistTotal: playlist.tracks.total,
-    //     tracks: [],
-    // }
-
     for (let i in playlist.tracks.items) {
-        // let track: myTracklist =  {
-        //     trackName: playlist.tracks.items[i].track.name,
-        //     trackArtist: playlist.tracks.items[i].track.album.artists[0].name,
-        //     trackUrl: playlist.tracks.items[i].track.external_urls.spotify,
-        //     trackID: playlist.tracks.items[i].track.id,
-        //     trackPopularity: playlist.tracks.items[i].track.popularity,
-        //     trackDanceability: 0, 
-        //     trackEnergy: 0,
-        //     trackInstrumentalness: 0,
-        //     trackTempo: 0,
-        //     trackValence: 0,
-        // }
-        // myList.tracks.push(track)
         trackIDs += playlist.tracks.items[i].track.id + ",";
-
     }
     
     // listofPlaylists.list.push(myList); // Use push to add the track to the array
@@ -211,61 +188,22 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
                     trackValence: trackData.valence,
                 }
                 myList.tracks.push(track)
-
-                // track.trackDanceability = trackData.danceability; 
-                // track.trackEnergy = trackData.energy;
-                // track.trackInstrumentalness = trackData.instrumentalness;
-                // track.trackTempo = trackData.tempo;
-                // track.trackValence = trackData.valence;
             }
         }
 
         listofPlaylists.list.push(myList);
+        
         // After fetching the playlists and populating the array, create a new instance of PlaylistGrid for each playlist
         for (let playlist of listofPlaylists.list) {
-            console.log("Creating grid for playlist:", playlist.playlistID, listofPlaylists.list, playlist);
+            console.log("Creating grid for playlist:", playlist.playlistID);
             new PlaylistGrid(playlist);
-}
+        }
         return data;
     } catch (error) {
         console.error("Error fetching tracks info:", error);
         throw error;
     }
 }
-
-// function populatePlaylist(playlist: Playlist, trackNames: myPlaylistArray) {
-
-//     // Retrieves HTML element "playlist_track_names" and casts it as a table element
-//     const playlistTrackNames = document.getElementById("playlist_track_names")! as HTMLTableElement;
-//     const playlistNames = document.getElementById("playlist_names")! as HTMLTableElement;
-    
-
-//     //Iterates over playlists when populating HTML elements.
-//     for (let i in trackNames.list) {
-//         const playlistItem = trackNames.list[i];
-
-//         playlistTrackNames.innerHTML += "<table>";
-
-//         //Modifies the inner HTML of an element to wrap playlist names in an ordered list.
-//         playlistNames.innerHTML += "<tr><td>"+playlistItem.playlistTotal.toString()+"</td>"
-//         +"<td>"+"<a target='spotifytab' href=" + playlistItem.playlistUrl + ">" 
-//         +playlistItem.playlistName+"</a></td>"
-//         +"<td><img class='logo' src="+playlistItem.playlistImageUrl+"></td></tr>";
-        
-//         for (let j in playlistItem.tracks) {
-//             const track = playlistItem.tracks[j];
-
-//             playlistTrackNames.innerHTML += "<tr><td>"
-//                 + j.toString() + "</td><td>"
-//                 + "<a target='spotifytab' href=" + track.trackUrl + ">" 
-//                 + track.trackName + "</a></td><td>"
-//                 + track.trackArtist + "</td><td>"
-//                 + track.trackPopularity + "</td></tr>";
-//         }
-//         playlistTrackNames.innerHTML += "</table>";
-
-//     }
-// }
 
 const playlistIDElement = document.getElementById('addPlaylist') as HTMLInputElement;
 const submitPlaylistButton = document.getElementById('submitPlaylist') as HTMLInputElement;
@@ -388,6 +326,8 @@ class PlaylistGrid {
         }
         return rowData;
     }
+
+    
 
     // Custom cell renderer to render track names as hyperlinks
     private customCellRenderer(params: any) {
