@@ -173,7 +173,7 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
         }
 
         // As the additional attributs are returned in the same order, the same array index can be used
-        console.log("Playlist has provided data:")
+        console.log("Playlist has provided data:");
         for (let i = 0; i in playlist.tracks.items; i++) {
             const trackData = data.audio_features[i];
             if (trackData) {
