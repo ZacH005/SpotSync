@@ -203,6 +203,7 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
         }
 
         new PlaylistsGrid(myList);
+        console.log("creating playlists grid:", myList)
         return data;
     } catch (error) {
         console.error("Error fetching tracks info:", error);

@@ -23,12 +23,25 @@ a:hover {
 }
 
 body {
-  margin:auto;
   display: flex;
-  justify-content: center;
-  min-width: 320px;
+  flex-direction: column;
+  width: 100%;
   min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
+
+html, body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  /* Ensures that the body takes the full height of the viewport */
+  min-height: 100vh;
+  /* Optional: Adjust the display to flex to manage inner sections layout */
+  display: flex;
+  flex-direction: column;
+}
+
 
 h1 {
   font-size: 3.2em;
@@ -36,7 +49,6 @@ h1 {
 }
 
 #app {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -121,12 +133,81 @@ table, th, td {
   background-color: rgb(61, 61, 61); /* Light gray background for header */
 }
 
-.grid-container {
+
+section, .grids-flex-container, .grid-container {
   display: flex;
-  justify-content: space-between; /* Adjust as needed */
-  margin-bottom: 20px; /* Optional: Add margin between grids */
+  flex-direction: row; /* Align children side by side */
+  gap: 20px; /* Adjust the gap as needed */
 }
+
+/* Adjusting the flex-container to ensure it fills the available space */
+.grids-flex-container {
+  display: flex;
+  gap: 20px; /* Adjust the gap as needed */
+  margin-top: 20px; /* Space below the playlist header */
+}
+
+/* Flex properties to adjust how children of the flex container grow */
+#playlistsGridContainer {
+  flex-grow: 0.4; /* Adjust based on your preference */
+}
+
+.grid-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column; /* Stack the playlist grids vertically */
+}
+
 .playlist-grid {
-  flex: 0 0 48%; /* Adjust width of each grid */
-  
+  flex: 1; /* Allows each playlist grid to fill the container equally */
+  height: 400px; /* Example height, adjust as necessary */
+}
+
+#navigation button {
+  margin: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+/* Ensure the playlist grids and their container take full width */
+#playlist, .grids-flex-container, .grid-container {
+  width: 100%;
+}
+
+#playerSection, #playlistSection {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#playerControls button {
+  max-width: 600px; /* Example max-width, adjust as necessary */
+  margin: 0 auto; /* Center the controls */
+}
+
+#contentTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#contentTable th {
+  text-align: left;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+}
+
+#contentTable td {
+  padding: 20px;
+  background-color: #242424;
+}
+
+#contentTable .grids-flex-container {
+  display: flex;
+  gap: 20px; /* Space between the playlist grids */
+}
+
+#contentTable .playlist-grid {
+  flex-basis: 50%;
+  height: 400px; /* Adjust height as necessary */
 }
