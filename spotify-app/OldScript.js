@@ -1,4 +1,4 @@
-import { redirectToAuthCodeFlow, getAccessToken } from "./authCodeWithPkce";
+import { redirectToAuthCodeFlow, getAccessToken } from "./dj-spotify-app/src/authCodeWithPkce";
 //Defining Client ID of App for API
 const clientId = "29ef0e92931e4445a605be8b6f3b674e";
 const params = new URLSearchParams(window.location.search);
