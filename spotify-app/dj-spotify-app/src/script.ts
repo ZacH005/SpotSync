@@ -201,6 +201,8 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
             console.log("Creating grid for playlist:", playlist.playlistID);
             new PlaylistGrid(playlist);
         }
+
+        new PlaylistsGrid(myList);
         return data;
     } catch (error) {
         console.error("Error fetching tracks info:", error);
@@ -274,6 +276,56 @@ if (userIDElement) {
 ModuleRegistry.register(ClientSideRowModelModule);
 
 let gridApis: GridApi[] = []; // Define gridApis as an array of GridApi
+
+class PlaylistsGrid {
+    private gridOptions: GridOptions = <GridOptions>{};
+    private playlist: myPlaylist;
+    private gridApi;
+
+    constructor(playlist: myPlaylist) {
+        this.playlist = playlist;
+
+        this.gridOptions = {
+            columnDefs: this.createColumnDefs(),
+            rowData: this.createRowData(),
+            rowDragManaged: true,
+        };
+
+        let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistsGridContainer');
+        console.log("Container element:", eGridDiv); // Log the container element
+        this.gridApi = createGrid(eGridDiv, this.gridOptions);
+        gridApis.push(this.gridApi); // Store grid API for later use
+    }
+
+    // specify the columns
+    private createColumnDefs() {
+        return [
+            { headerName: "Playlist Name", field: "playlistName", cellRenderer: this.customCellRenderer, rowDrag: true },
+            { headerName: "Playlist ID", field: "playlistID" },
+        ];
+    }
+
+    // specify the data
+    private createRowData() {
+        // Retrieve playlist tracks from the playlist and format them for the grid
+        let rowData: any[] = [];
+        for (let track of this.playlist.tracks) {
+            rowData.push({
+                playlistName: this.playlist.playlistName,
+                playlistID: this.playlist.playlistID,
+            });
+        }
+        return rowData;
+    }
+
+    // Custom cell renderer to render track names as hyperlinks
+    private customCellRenderer(params: any) {
+        if (params.value && params.value !== '') {
+            return `<a href="${params.data.trackUrl}" target="spotifytab">${params.value}</a>`;
+        }
+        return null;
+    }
+}
 
 class PlaylistGrid {
     private gridOptions: GridOptions = <GridOptions>{};

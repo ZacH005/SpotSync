@@ -4,10 +4,13 @@
       <meta charset="utf-8">
       <link rel="stylesheet" href="css/style.css" />
       <title>DJing Playlist App</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
       <script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
       <script src="https://sdk.scdn.co/spotify-player.js"></script>
       <script defer src="src/script.ts" type="module"></script>
+
       <script>
         function displayProfile(){  
           var x = document.getElementById('profile');
@@ -122,11 +125,13 @@
       </form>
       <p id="result"></p>
     </section>
-    
+
     <section id="playlist">
       <h1>Spotify Playlist</h1>
 
       <input id="createPlaylist" type="button" value="Create New Playlist">
+
+      <div id="playlistsGridContainer" style="height: 400px" class="ag-theme-alpine-dark"></div>
 
       <div class="grid-container">
         <!-- Playlist Grid 1 -->
