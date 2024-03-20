@@ -32,7 +32,7 @@
     <section id="mainContent">
       <table id="contentTable">
         <tr>
-          <th>Spotify Player</th>
+          <th colspan="1">Spotify Player</th>
         </tr>
         <tr>
           <td>
@@ -44,22 +44,28 @@
           </td>
         </tr>
         <tr>
-          <th>Spotify Playlist</th>
+          <th colspan="2">Spotify Playlist</th>
         </tr>
-        <tr>
+        <tr id="playlistRow">
           <td>
             <section id="playlistSection">
               <!-- Parent container with class 'grids-flex-container' to display grids side by side -->
               <div class="grids-flex-container">
-                <div id="playlistsGridContainer" style="height: 400px; width: 500;" class="ag-theme-alpine-dark"></div>
-                <div class="grid-container" style="flex-grow: 1;">
-                  <!-- Playlist Grid 1 -->
-                  <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-                  <!-- Playlist Grid 2 -->
-                  <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-                </div>
+                
+              </div>
+              <div class="grid-container" style="flex-grow: 1;">
+                <!-- Playlist Grid 1 -->
+                <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+                <!-- Playlist Grid 2 -->
+                <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
               </div>
             </section>
+          </td>
+          
+        </tr>
+        <tr>
+          <td>
+            <div id="playlistsGridContainer" style="height: 200px; width: 100px;" class="ag-theme-alpine-dark"></div>
           </td>
         </tr>
       </table>

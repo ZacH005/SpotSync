@@ -147,11 +147,6 @@ section, .grids-flex-container, .grid-container {
   margin-top: 20px; /* Space below the playlist header */
 }
 
-/* Flex properties to adjust how children of the flex container grow */
-#playlistsGridContainer {
-  flex-grow: 0.4; /* Adjust based on your preference */
-}
-
 .grid-container {
   flex-grow: 1;
   display: flex;
