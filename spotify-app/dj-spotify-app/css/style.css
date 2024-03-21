@@ -197,12 +197,9 @@ section, .grids-flex-container, .grid-container {
   background-color: #242424;
 }
 
-#contentTable .grids-flex-container {
-  display: flex;
-  gap: 20px; /* Space between the playlist grids */
+#playlistsGridContainer{
+  width: 300px;
 }
-
-#contentTable .playlist-grid {
-  flex-basis: 50%;
-  height: 400px; /* Adjust height as necessary */
+#playlistSection{
+  width: 100%;
 }

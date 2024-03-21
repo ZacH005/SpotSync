@@ -59,11 +59,6 @@ interface Playlist  {
                     ]
                 }
                 popularity: number;
-                trackDanceability: number;
-                trackEnergy: number;
-                trackInstrumentalness: number;
-                trackTempo: number;
-                trackValence: number;
             }
         }
     }

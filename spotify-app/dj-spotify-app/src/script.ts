@@ -1,4 +1,3 @@
-// As it is a single page document we detect a callback from Spotify by checking for the hash fragment
 //Imports specific functions from an external module.
 import { redirectToAuthCodeFlow, getAccessToken } from "./authCodeWithPkce.ts";
 import { GridApi, createGrid, GridOptions, ModuleRegistry } from "@ag-grid-community/core";
@@ -14,21 +13,27 @@ var accessToken = "";
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
 
-//Defines a custom TypeScript type for an array of playlists.
+//Defines a custom TypeScript type for an array of playlists
 type myPlaylistArray =  {
     list: myPlaylist[];
 }
 
-//Defines a custom TypeScript type for a playlist object. (Object-oriented Programming (OOP))
+/*Defines a custom TypeScript type for a playlist object
+including all necessary attributes to be used later*/
 type myPlaylist =  {
     playlistName: string;
     playlistUrl: string;
     playlistID: string;
     playlistImageUrl: string;
     playlistTotal: number;
+    /*Nests array with an array of tracks within specific 
+    playlist, linking it to proper type for referening*/
     tracks: myTracklist[];
 }
 
+/*Defining additional type for tracks object, maximizing
+reusability allowing for all playlists to locally save
+tracks within the given arrays*/
 type myTracklist =  {
     trackName: string;
     trackArtist: string;
@@ -42,7 +47,8 @@ type myTracklist =  {
     trackValence: number;
 }
 
-let listofPlaylists: myPlaylistArray = { list: [] }; // Initialize as an empty array
+// Initialize as an empty array
+let listofPlaylists: myPlaylistArray = { list: [] }; 
 
 //Initial values for the playlists
 var playlistID = "37i9dQZF1DX4xuWVBs4FgJ";
@@ -89,21 +95,6 @@ async function fetchProfile(code: string): Promise<UserProfile> {
     }
 }
 
-function populateUI(profile: UserProfile) {
-
-    //Updates the inner text of a DOM element with the user's data
-    document.getElementById("displayName")!.innerText = profile.display_name;
-    document.getElementById("avatar")!.setAttribute("src", profile.images[1].url)
-    document.getElementById("id")!.innerText = profile.id;
-    document.getElementById("email")!.innerText = profile.email;
-    document.getElementById("uri")!.innerText = profile.uri;
-    document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
-    document.getElementById("url")!.innerText = profile.href;
-    document.getElementById("url")!.setAttribute("href", profile.href);
-    document.getElementById("imgUrl")!.innerText = profile.images[1].url;
-    document.getElementById("country")!.innerText = profile.country;
-}
-
 async function fetchPlaylists(code: string, userID: string): Promise<UserPlaylists> {
     try{
         const result = await fetch("https://api.spotify.com/v1/users/"+userID+"/playlists", {
@@ -141,17 +132,11 @@ async function getPlaylist(code: string, playlistID: string): Promise<Playlist> 
 }
 
 function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myPlaylistArray  {
-    
-    // let trackNames: myPlaylistArray = { list: [] }; // Initialize as an empty array
     var trackIDs = "";
-
     for (let i in playlist.tracks.items) {
         trackIDs += playlist.tracks.items[i].track.id + ",";
     }
-    
-    // listofPlaylists.list.push(myList); // Use push to add the track to the array
     fetchTrackInfo(accessToken, trackIDs, playlist, listofPlaylists);
-
     return listofPlaylists;
 }
 
@@ -172,12 +157,13 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
             tracks: [],
         }
 
-        // As the additional attributs are returned in the same order, the same array index can be used
+        /* As the additional attributs are returned in the same order, 
+        the same array index can be used*/
         console.log("Playlist has provided data:");
         for (let i = 0; i in playlist.tracks.items; i++) {
             const trackData = data.audio_features[i];
             if (trackData) {
-                console.log("Track Attributes are given:", i, trackData.energy, trackData.instrumentalness, trackData.tempo, trackData.valence);
+                console.log("Track Attributes are given:", i, trackData.energy);
                 let track: myTracklist =  {
                     trackName: playlist.tracks.items[i].track.name,
                     trackArtist: playlist.tracks.items[i].track.album.artists[0].name,
@@ -196,7 +182,8 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
 
         listofPlaylists.list.push(myList);
         
-        // After fetching the playlists and populating the array, create a new instance of PlaylistGrid for each playlist
+        /* After fetching the playlists and populating the array, 
+        create a new instance of PlaylistGrid for each playlist*/
         for (let playlist of listofPlaylists.list) {
             console.log("Creating grid for playlist:", playlist.playlistID);
             new PlaylistGrid(playlist);
@@ -207,7 +194,7 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
         return data;
     } catch (error) {
         console.error("Error fetching tracks info:", error);
-        throw error;
+        throw error; // Rethrow the error to propagate it to the caller
     }
 }
 
@@ -272,6 +259,21 @@ if (userIDElement) {
 } else {
     // Handle the case when the element is not found
     userID = "theblazingamer";
+}
+
+function populateUI(profile: UserProfile) {
+
+    //Updates the inner text of a DOM element with the user's data
+    document.getElementById("displayName")!.innerText = profile.display_name;
+    document.getElementById("avatar")!.setAttribute("src", profile.images[1].url)
+    document.getElementById("id")!.innerText = profile.id;
+    document.getElementById("email")!.innerText = profile.email;
+    document.getElementById("uri")!.innerText = profile.uri;
+    document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
+    document.getElementById("url")!.innerText = profile.href;
+    document.getElementById("url")!.setAttribute("href", profile.href);
+    document.getElementById("imgUrl")!.innerText = profile.images[1].url;
+    document.getElementById("country")!.innerText = profile.country;
 }
 
 ModuleRegistry.register(ClientSideRowModelModule);

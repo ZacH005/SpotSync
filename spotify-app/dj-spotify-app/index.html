@@ -48,31 +48,21 @@
         </tr>
         <tr id="playlistRow">
           <td>
-            <section id="playlistSection">
-              <!-- Parent container with class 'grids-flex-container' to display grids side by side -->
-              <div class="grids-flex-container">
-                
-              </div>
-              <div class="grid-container" style="flex-grow: 1;">
-                <!-- Playlist Grid 1 -->
-                <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-                <!-- Playlist Grid 2 -->
-                <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-              </div>
+            <section id="playlistSection">              
+              <!-- Playlist Grid 1 -->
+              <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+              <!-- Playlist Grid 2 -->
+              <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+              <!-- General Playlists Display Grid -->
+              <div id="playlistsGridContainer" style="height: 400px" class="ag-theme-alpine-dark"></div>
             </section>
-          </td>
-          
-        </tr>
-        <tr>
-          <td>
-            <div id="playlistsGridContainer" style="height: 200px; width: 100px;" class="ag-theme-alpine-dark"></div>
           </td>
         </tr>
       </table>
 
       <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = "BQCOk4qS5XoVbGj5XUIe1WiOy_MEhTtQpta3LLm9oSR_2xg2VO1UPzpi5GSpvst-VH8vr5qbVqLIDSzABZ9SWqEXJ40AbRCxBx4hp_GHrIYv0yixvbyGpnUyhgkQhDWvBEjYRVwA0gINlrBudR79Lhoq83wMSKypXsM1DPI-SrF44dVBOn7Bx01aFYRMP21me5wkjiFoiDshGA";
+            const token = "BQBJ7-tJ5hypRg225h8HQx4rPZBKR7-8QzVSoD_H6BXAkdG47Bipi7pfWZTcZ8KJPkhxh_5EaDLp_6OiU6w4p3UO4CMEyKLorA1yAcBMXqhZ_g2R0qIl2wbTkjl9gDEjcLSLujtGpx3wmNCJrYC-pvzJosNF4DKAhtnRwSyGsoDKFmqZDryo2m9AQ45pGwWDTJYf2kTTKfcLdw";
             const player = new Spotify.Player({
                 name: 'Web Playback',
                 getOAuthToken: cb => { cb(token); },
