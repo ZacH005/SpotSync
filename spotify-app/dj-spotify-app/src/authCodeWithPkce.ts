@@ -1,4 +1,4 @@
-// Source: Spotify documentation - authorization code flow
+// Source: Spotify documentation - (Authorization code with PKCE flow) found in references
 export async function redirectToAuthCodeFlow(clientId: string) {
     const verifier = generateCodeVerifier(128);
     const challenge = await generateCodeChallenge(verifier);
