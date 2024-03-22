@@ -1,6 +1,6 @@
 //Imports specific functions from an external module.
 import { redirectToAuthCodeFlow, getAccessToken } from "./authCodeWithPkce.ts";
-import { GridApi, createGrid, GridOptions, ModuleRegistry } from "@ag-grid-community/core";
+import { GridApi, createGrid, GridOptions, ModuleRegistry, RowDropZoneParams } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RowDragComp } from "ag-grid-community/dist/lib/rendering/row/rowDragComp";
 import { RowDragFeature } from "ag-grid-community/dist/lib/gridBodyComp/rowDragFeature";
@@ -140,6 +140,9 @@ function populateArray(playlist: Playlist,listofPlaylists: myPlaylistArray): myP
     return listofPlaylists;
 }
 
+let gridApiTarget;
+let gridApiSource; // Initialized somewhere in your code where the source grid is set up
+
 async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist, listofPlaylists: myPlaylistArray): Promise<any> {
     try {
         const result = await fetch("https://api.spotify.com/v1/audio-features?ids=" + trackIds, {
@@ -147,7 +150,10 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
         });
 
         const data = await result.json();
-        
+
+        for (let i = 0; i in playlist.tracks.items; i++){
+            
+        }
         let myList: myPlaylist = {
             playlistName: playlist.name,
             playlistUrl: playlist.external_urls.spotify,
@@ -184,13 +190,25 @@ async function fetchTrackInfo(code: string, trackIds: string, playlist: Playlist
         
         /* After fetching the playlists and populating the array, 
         create a new instance of PlaylistGrid for each playlist*/
+        let i = 1;
         for (let playlist of listofPlaylists.list) {
             console.log("Creating grid for playlist:", playlist.playlistID);
-            new PlaylistGrid(playlist);
+            new PlaylistGrid(playlist, i);
+            
+            if (i == 1) {
+                (i = 2);
+            } else{
+                i = 1;
+            }
         }
 
-        new PlaylistsGrid(myList);
+        // Creates the grid for displaying the list of playlists
+        new PlaylistsGrid(listofPlaylists);
         console.log("creating playlists grid:", myList)
+
+        newPlaylistGrid();
+        
+        //newPlaylistGrid();
         return data;
     } catch (error) {
         console.error("Error fetching tracks info:", error);
@@ -208,9 +226,9 @@ if (playlistIDElement) {
     // Visualize in the HTML
     let resultElement = document.getElementById('result');
 
-    if (resultElement) {
-        resultElement.textContent = "Playlist ID:" + playlistID2;
-    }
+    // if (resultElement) {
+    //     resultElement.textContent = "Playlist ID:" + playlistID2;
+    // }
 
     submitPlaylistButton.addEventListener('click', async () => {
         playlistID2 = playlistIDElement.value;
@@ -267,12 +285,10 @@ function populateUI(profile: UserProfile) {
     document.getElementById("displayName")!.innerText = profile.display_name;
     document.getElementById("avatar")!.setAttribute("src", profile.images[1].url)
     document.getElementById("id")!.innerText = profile.id;
-    document.getElementById("email")!.innerText = profile.email;
     document.getElementById("uri")!.innerText = profile.uri;
     document.getElementById("uri")!.setAttribute("href", profile.external_urls.spotify);
     document.getElementById("url")!.innerText = profile.href;
     document.getElementById("url")!.setAttribute("href", profile.href);
-    document.getElementById("imgUrl")!.innerText = profile.images[1].url;
     document.getElementById("country")!.innerText = profile.country;
 }
 
@@ -282,16 +298,20 @@ let gridApis: GridApi[] = []; // Define gridApis as an array of GridApi
 
 class PlaylistsGrid {
     private gridOptions: GridOptions = <GridOptions>{};
-    private playlist: myPlaylist;
+
+    // private playlist: myPlaylist;
+    private playlists: myPlaylistArray;
     private gridApi;
 
-    constructor(playlist: myPlaylist) {
-        this.playlist = playlist;
+    constructor(playlist: myPlaylistArray) {
+        // this.playlist = playlist;
 
         this.gridOptions = {
             columnDefs: this.createColumnDefs(),
             rowData: this.createRowData(),
             rowDragManaged: true,
+            enableCellTextSelection: true,
+            ensureDomOrder: true,
         };
 
         let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistsGridContainer');
@@ -312,12 +332,17 @@ class PlaylistsGrid {
     private createRowData() {
         // Retrieve playlist tracks from the playlist and format them for the grid
         let rowData: any[] = [];
-        for (let track of this.playlist.tracks) {
+        for (let playlist of listofPlaylists.list) {
             rowData.push({
-                playlistName: this.playlist.playlistName,
-                playlistID: this.playlist.playlistID,
+                playlistName: playlist.playlistName,
+                playlistID: playlist.playlistID,
             });
+            console.log("populating grid with playlist:"+playlistID)
+
         }
+        // for (let playlistName of this.playlist) {
+            
+        // }
         return rowData;
     }
 
@@ -334,36 +359,43 @@ class PlaylistGrid {
     private gridOptions: GridOptions = <GridOptions>{};
     private playlist: myPlaylist;
     private gridApi;
+    
 
-    constructor(playlist: myPlaylist) {
+    constructor(playlist: myPlaylist, i: number) {
         this.playlist = playlist;
 
         this.gridOptions = {
             columnDefs: this.createColumnDefs(),
             rowData: this.createRowData(),
             rowDragManaged: true,
+            rowMultiSelectWithClick: true,
+            rowSelection: 'single',
             //onRowDragMove: this.onRowDragMove.bind(this),
             onRowDragEnd: this.onRowDragEnd.bind(this),
             onRowDragLeave: this.onRowDragLeave.bind(this),
         };
 
-        let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistGrid_' + playlist.playlistID);
+        let eGridDiv: HTMLElement = <HTMLElement>document.querySelector('#playlistGrid_' + i);
         console.log("Container element:", eGridDiv); // Log the container element
         this.gridApi = createGrid(eGridDiv, this.gridOptions);
         gridApis.push(this.gridApi); // Store grid API for later use
+
+        document.getElementById("playlistHeader"+i)!.innerText = this.playlist.playlistName;
+
+        
     }
 
     // specify the columns
     private createColumnDefs() {
         return [
-            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, rowDrag: true },
-            { headerName: "Artist", field: "trackArtist" },
-            { headerName: "Popularity", field: "trackPopularity" },
-            { headerName: "Danceability", field: "trackDanceability" }, 
-            { headerName: "Energy", field: "trackEnergy" }, 
-            { headerName: "Instrumentalness", field: "trackInstrumentalness" }, 
-            { headerName: "Tempo", field: "trackTempo" }, 
-            { headerName: "Valence", field: "trackValence" }, 
+            { headerName: "Track Name", field: "trackName", cellRenderer: this.customCellRenderer, rowDrag: true, filter: true },
+            { headerName: "Artist", field: "trackArtist", filter: true },
+            { headerName: "Popularity", field: "trackPopularity", filter: true },
+            { headerName: "Danceability", field: "trackDanceability", filter: true }, 
+            { headerName: "Energy", field: "trackEnergy", filter: true }, 
+            { headerName: "Instrumentalness", field: "trackInstrumentalness", filter: true }, 
+            { headerName: "Tempo", field: "trackTempo", filter: true }, 
+            { headerName: "Valence", field: "trackValence", filter: true }, 
         ];
     }
 
@@ -436,37 +468,6 @@ class PlaylistGrid {
     }
 }
 
-
-
-// async function createPlaylist(accessToken: string, userID: string): Promise<any> {
-//     try {
-//         const result = await fetch("https://api.spotify.com/v1/users/" + userID + "/playlists", {
-//             method: "POST",
-//             headers: {
-//                 Authorization: `Bearer ${accessToken}`,
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify({
-//                 name: "New Playlist",
-//                 description: "Empty Playlist",
-//                 public: true
-//             })
-//         });
-
-//         const newPlaylistData = await result.json();
-
-//         const playlist = newPlaylistData.id;
-
-//         populateArray(playlist, listofPlaylists);
-
-//         return newPlaylistData;
-//     } catch (error) {
-//         console.error("Error creating playlist:", error);
-//         throw error; // Rethrow the error to propagate it to the caller
-//     }
-// }
-
-
 const createPlaylistButton = document.getElementById('createPlaylist') as HTMLInputElement;
 
 createPlaylistButton.addEventListener('click', async () => {
@@ -497,4 +498,86 @@ async function createPlaylist(accessToken: string, userID: string): Promise<any>
         console.error('Error creating playlist:', error);
         throw error;
     }
+}
+
+const newPlaylistButton = document.getElementById('newPlaylist2') as HTMLInputElement;
+
+newPlaylistButton.addEventListener('click', async () => {
+    // newPlaylist();
+    console.log("New playlist button click")
+});
+
+
+function newPlaylistGrid() {
+    // Initialize an empty myPlaylist object with placeholders
+    let newPlaylist: myPlaylist = {
+        playlistName: "",
+        playlistUrl: "",
+        playlistID: "",
+        playlistImageUrl: "",
+        playlistTotal: 0,
+        tracks: []
+    };
+
+    new PlaylistGrid(newPlaylist, 3);
+}
+
+function newPlaylist() {
+    // Step 1: Create an empty myPlaylist object with placeholder values
+    let newTracks: myTracklist = {
+        trackName: "",
+        trackArtist: "",
+        trackUrl: "",
+        trackID: "",
+        trackPopularity: "",
+        trackDanceability: 0,
+        trackEnergy: 0,
+        trackInstrumentalness: 0,
+        trackTempo: 0,
+        trackValence: 0,
+    }
+    
+    let newPlaylist = {
+        playlistName: "New Playlist",
+        playlistUrl: " ",
+        playlistID: `playlist_${listofPlaylists.list.length}`, // Example ID generation
+        playlistImageUrl: " ",
+        playlistTotal: 0,
+        tracks: [newTracks]
+    };
+
+    // Step 2: Add the new empty playlist to listofPlaylists.list
+    listofPlaylists.list.push(newPlaylist);
+
+    // Step 3: Update the playlistsGrid to reflect the new playlist
+    // Assuming you have an instance or a method to refresh or recreate the grid with the updated list
+    refreshPlaylistsGrid();
+}
+
+// Assuming this is a function that re-renders or refreshes your PlaylistsGrid with the updated listofPlaylists
+function refreshPlaylistsGrid() {
+    // Example: Clear the existing grid and add new data
+    // This assumes you have a way to access your PlaylistsGrid instance or a static method to update it.
+    // If you have an instance of PlaylistsGrid, you might need to call a method on it to refresh the grid.
+    let playlistsGridContainer = document.querySelector('#playlistsGridContainer');
+    if (playlistsGridContainer) {
+        // Clear the existing grid container
+        playlistsGridContainer.innerHTML = '';
+        // Recreate the grid with the updated listofPlaylists
+        new PlaylistsGrid(listofPlaylists);
+    }
+}
+
+
+const copyPlaylistButton = document.getElementById('copyPlaylist') as HTMLInputElement;
+
+copyPlaylistButton.addEventListener('click', async () => {
+    copySelectedRowToAnotherGrid();
+    console.log("New playlist button click")
+});
+
+function copySelectedRowToAnotherGrid() {
+    // Assuming gridApiSource and gridApiTarget reference your source and target GridApi instances respectively
+    const selectedRows = gridApiSource.getSelectedRows(); // Gets the selected row data
+    gridApiTarget.applyTransaction({ add: selectedRows }); // Adds the selected row data to the target grid
 }

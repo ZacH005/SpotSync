@@ -14,7 +14,7 @@ export async function redirectToAuthCodeFlow(clientId: string) {
     // Prepare the authorization request parameters
     const params = new URLSearchParams();   
     params.append("client_id", clientId); // Spotify Client ID
-    params.append("response_type", "code"); // Indicating we want an authorization code back
+    params.append("response_type", "code"); // Indicating authorization code is wanted back
     params.append("redirect_uri", "http://localhost:5173/callback"); // Where Spotify will redirect to after authorization
     params.append("scope", "user-read-private user-read-email"); // Permissions the app is requesting
     params.append("code_challenge_method", "S256"); // PKCE method used
@@ -32,7 +32,7 @@ export async function getAccessToken(clientId: string, code: string) {
     // Prepare the request parameters for token exchange
     const params = new URLSearchParams();
     params.append("client_id", clientId); // Spotify Client ID
-    params.append("grant_type", "authorization_code"); // Indicating the type of grant we're requesting
+    params.append("grant_type", "authorization_code"); // Indicating the type of grant being requested
     params.append("code", code); // The authorization code received from the initial auth request
     params.append("redirect_uri", "http://localhost:5173/callback"); // Must match the initial request's URI
     params.append("code_verifier", verifier!); // The stored code verifier for PKCE validation

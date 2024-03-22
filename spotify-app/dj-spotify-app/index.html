@@ -24,12 +24,13 @@
   <body>
     <!-- Navigation between grids and the other features -->
     <div id="navigation">
-        <button id="showMainContent">Show Player & Playlists</button>
-        <button id="showOtherFeatures">Show Other Features</button>
+        <button id="playerPlaylists">Spotify Player & Playlists</button>
+        <button id="findUsers">Find Users</button>
+        <button id="myProfile">My Profile</button>
     </div>
 
     <!-- Main Content: Player & Playlist Grids -->
-    <section id="mainContent">
+    <section id="playerPlaylistsDiv">
       <table id="contentTable">
         <tr>
           <th colspan="1">Spotify Player</th>
@@ -48,13 +49,42 @@
         </tr>
         <tr id="playlistRow">
           <td>
-            <section id="playlistSection">              
-              <!-- Playlist Grid 1 -->
-              <div id="playlistGrid_37i9dQZF1DX4xuWVBs4FgJ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
-              <!-- Playlist Grid 2 -->
-              <div id="playlistGrid_59XMuGvjGqOINdEGGos9NZ" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+            <section id="playlistSection">
               <!-- General Playlists Display Grid -->
-              <div id="playlistsGridContainer" style="height: 400px" class="ag-theme-alpine-dark"></div>
+              <div>
+                <h2>Playlists</h2>
+                <div id="playlistsGridContainer" style="height: 400px" class="ag-theme-alpine-dark"></div>              
+              </div>
+              <div style="width:100%">
+                <!-- Playlist Grid 1 -->
+                <h2 id="playlistHeader1">Playlist</h2>
+                <div id="playlistGrid_1" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+              </div>
+              <div style="width:100%" id="oldPlaylistGrid">
+                <!-- Playlist Grid 2 -->
+                <h2 id="playlistHeader2">Playlist</h2>
+                <div id="playlistGrid_2" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+              </div>
+              <div id="newPlaylistGrid" style="width:100%; display:none;">
+                <!-- Playlist Grid 2 -->
+                <h2 id="newPlaylistHeader">New Playlist</h2>
+                <div id="playlistGrid_3" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
+              </div>
+              <input id="newPlaylist" type="button" value="New Playlist" onclick="newPlaylist()">
+              <!-- <button id="copyPlaylist">Copy Selected Row(s)</button> -->
+
+              <script>
+                function newPlaylist(){  
+                  var x = document.getElementById('newPlaylistGrid');
+                  var y = document.getElementById('oldPlaylistGrid');
+                if (x.style.display == 'none') {
+                  y.style.display = 'none';
+                  x.style.display = 'block';
+                } else {
+                    x.style.display = 'none';
+                    y.style.display = 'block';
+                }}
+              </script>
             </section>
           </td>
         </tr>
@@ -62,7 +92,7 @@
 
       <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = "BQBJ7-tJ5hypRg225h8HQx4rPZBKR7-8QzVSoD_H6BXAkdG47Bipi7pfWZTcZ8KJPkhxh_5EaDLp_6OiU6w4p3UO4CMEyKLorA1yAcBMXqhZ_g2R0qIl2wbTkjl9gDEjcLSLujtGpx3wmNCJrYC-pvzJosNF4DKAhtnRwSyGsoDKFmqZDryo2m9AQ45pGwWDTJYf2kTTKfcLdw";
+            const token = "BQC1046xNiqM-sVAwTYMDonp3F66LBHhTybpsdOk-8S8TKKniGgx6a4Efj1b3kUmca9sbbfCusWp5t8s0P4fw8jeo5wBPZDbSybzNaxLm0JjPxdHvYJyU6A3bHZWHTCrvvsTgRFRyqF8fsBVDC8jiwiog_R_MBUTuuFyv9BGqfwhEsI0dG3evx4GYDSLA8B_hWAWFdlD8AuNyQ";
             const player = new Spotify.Player({
                 name: 'Web Playback',
                 getOAuthToken: cb => { cb(token); },
@@ -109,68 +139,85 @@
     </section>
 
     <!-- Other Features: All other elements -->
-    <div id="otherFeatures" style="display:none;">
-      <body>
-        <div>
-          <section>
-            <input id="clickMe" type="button" value="Display Profile" onclick="displayProfile()" />
-          </section>
-        </div>
-    
-        <section id="inputUser">
-          <form>
-            <label for="addUser">User ID:</label><br>
-            <input type="text" id="addUser" name="addUser" value="fbx2u2h4kefo9xlhuhkej4bkx"><br>
-            <input id="submitUser" type="button" value="Submit">
-          </form>
-          <p id="result"></p>
-        </section>
-    
-        <section id="profile">
-          <h1>Spotify profile data</h1>
+    <div id="myProfileDiv" style="display:none;">
+      <input id="clickMe" type="button" value="Display Profile" onclick="displayProfile()" />
+      <table width="100%">
+      <tr>
+      <td colspan="2">
+        <section id="profile" style="display: block">
+          <h2>Spotify profile data</h2>
           <h2>Logged in as <span id="displayName"></span></h2>
           <img id="avatar" width="500" src="#" />
           <ul>
             <li>User ID: <span id="id"></span></li>
             <li>Country: <span id="country"></span></li>
-            <li>Email: <span id="email"></span></li>
             <li>Spotify URI: <a id="uri" href="#"></a></li>
             <li>Link: <a id="url" href="#"></a></li>
-            <li>Profile Image: <span id="imgUrl"></span></li>
           </ul>
         </section>
-        
-        <section id="playlists">
-          <h1>User Playlists</h1>
-          <ul> 
-            <li>Playlists Total: <span id="playlists_total"></span></li>
-          </ul>
-            <table>
-              <tr><th></th>Playlists Names:</th></tr>
-              <tbody id="playlists_names"></tbody>
-            </table>
-        </section>
-      
-        <section id="inputPlaylist">
-          <form>
-            <label for="addPlaylist">Playlist ID:</label><br>
-            <input type="text" id="addPlaylist" name="addPlaylist" value="59XMuGvjGqOINdEGGos9NZ"><br>
-            <input id="submitPlaylist" type="button" value="Submit">
-          </form>
-          <p id="result"></p>
-        </section>
-      </body>
+      </td>
+      </tr>
+      </table>
     </div>
 
+    <div id="findingUsersDiv" style="display:none;">
+      <table width="100%">
+        <tr>
+          <td>
+            <h2>Find User's Playlists</h2>
+            <section id="inputUser">
+              <form>
+                <label for="addUser">Enter User ID:</label><br>
+                <input type="text" id="addUser" name="addUser" value="1212178989"><br>
+                <input id="submitUser" type="button" value="Submit">
+              </form>
+            </section>
+          </td>
+          <td>
+            <h2>User's Playlists</h2>
+            <section id="playlists">
+                Playlists Total: <span id="playlists_total"></span>
+                <table style="border-width: 0px;">
+                  <tr><th colspan="2">Playlists</th></tr>
+                  <tr><th>Names:</th><th>ID:</th></tr>
+                  <tbody id="playlists_names"></tbody>
+                </table>
+            </section>
+          </td>
+          </tr>
+          <tr>
+            <td>
+              <h2>Load Playlist with ID</h2>
+            <section id="inputPlaylist">
+              <form>
+                <label for="addPlaylist">Playlist ID:</label><br>
+                <input type="text" id="addPlaylist" name="addPlaylist" value="59XMuGvjGqOINdEGGos9NZ"><br>
+                <input id="submitPlaylist" type="button" value="Submit">
+              </form>
+              <p id="result"></p>
+            </section>
+          </td>
+          </tr>
+      </table>
+    </div>
     <script>
-        document.getElementById('showMainContent').addEventListener('click', function() {
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('otherFeatures').style.display = 'none';
+        document.getElementById('playerPlaylists').addEventListener('click', function() {
+            document.getElementById('findingUsersDiv').style.display = 'none';
+            document.getElementById('playerPlaylistsDiv').style.display = 'block';
+            document.getElementById('myProfileDiv').style.display = 'none';
         });
 
-        document.getElementById('showOtherFeatures').addEventListener('click', function() {
-            document.getElementById('mainContent').style.display = 'none';
-            document.getElementById('otherFeatures').style.display = 'block';
+        document.getElementById('findUsers').addEventListener('click', function() {
+            document.getElementById('findingUsersDiv').style.display = 'block';
+            document.getElementById('playerPlaylistsDiv').style.display = 'none';
+            document.getElementById('myProfileDiv').style.display = 'none';
+            
+        });
+
+        document.getElementById('myProfile').addEventListener('click', function() {
+          document.getElementById('findingUsersDiv').style.display = 'none';
+            document.getElementById('playerPlaylistsDiv').style.display = 'none';
+            document.getElementById('myProfileDiv').style.display = 'block';
         });
     </script>
   </body>
