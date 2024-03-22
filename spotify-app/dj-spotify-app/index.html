@@ -70,7 +70,7 @@
                 <h2 id="newPlaylistHeader">New Playlist</h2>
                 <div id="playlistGrid_3" style="height: 400px" class="playlist-grid ag-theme-alpine-dark"></div>
               </div>
-              <input id="newPlaylist" type="button" value="New Playlist" onclick="newPlaylist()">
+              <button id="newPlaylist" type="button" onclick="newPlaylist()">New Playlist</button>
               <!-- <button id="copyPlaylist">Copy Selected Row(s)</button> -->
 
               <script>
@@ -92,7 +92,7 @@
 
       <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = "BQC1046xNiqM-sVAwTYMDonp3F66LBHhTybpsdOk-8S8TKKniGgx6a4Efj1b3kUmca9sbbfCusWp5t8s0P4fw8jeo5wBPZDbSybzNaxLm0JjPxdHvYJyU6A3bHZWHTCrvvsTgRFRyqF8fsBVDC8jiwiog_R_MBUTuuFyv9BGqfwhEsI0dG3evx4GYDSLA8B_hWAWFdlD8AuNyQ";
+            const token = "BQCYB4JdsNaynbKM1ITnBVL3zbS8hL7f5wFix-YvT5fA9JMwyGalqWbAs4xCnp7kIjW992BLT8Uwhxr0_pd0HpA7-186U_c5q3c9zTWX9_Ca7qGgJl1diD_vNYnXQoWSgwc1EacSo_6Rbqw15dtZ5C7cJTaQPohFk3YiXUKc7hsXipgGLXe1TFd19BT6UMEW7fsuJ3zhgXyzsw";
             const player = new Spotify.Player({
                 name: 'Web Playback',
                 getOAuthToken: cb => { cb(token); },
@@ -141,7 +141,7 @@
     <!-- Other Features: All other elements -->
     <div id="myProfileDiv" style="display:none;">
       <input id="clickMe" type="button" value="Display Profile" onclick="displayProfile()" />
-      <table width="100%">
+      <table width="100%" id="profileTable">
       <tr>
       <td colspan="2">
         <section id="profile" style="display: block">
@@ -161,7 +161,7 @@
     </div>
 
     <div id="findingUsersDiv" style="display:none;">
-      <table width="100%">
+      <table width="100%" id="userTable">
         <tr>
           <td>
             <h2>Find User's Playlists</h2>
@@ -186,7 +186,7 @@
           </td>
           </tr>
           <tr>
-            <td>
+            <td colspan="2">
               <h2>Load Playlist with ID</h2>
             <section id="inputPlaylist">
               <form>

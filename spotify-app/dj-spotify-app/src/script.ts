@@ -323,7 +323,7 @@ class PlaylistsGrid {
     // specify the columns
     private createColumnDefs() {
         return [
-            { headerName: "Playlist Name", field: "playlistName", cellRenderer: this.customCellRenderer, rowDrag: true },
+            { headerName: "Playlist Name", field: "playlistName", cellRenderer: this.customCellRenderer },
             { headerName: "Playlist ID", field: "playlistID" },
         ];
     }

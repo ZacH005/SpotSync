@@ -175,9 +175,11 @@ section, .grids-flex-container, .grid-container {
   margin-bottom: 20px;
 }
 
-#playerControls button {
-  max-width: 600px; /* Example max-width, adjust as necessary */
-  margin: 0 auto; /* Center the controls */
+#playerControls button, #newPlaylist {
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
+  transition: transform 0.2s ease-in-out;
 }
 
 #contentTable {
@@ -202,4 +204,60 @@ section, .grids-flex-container, .grid-container {
 }
 #playlistSection{
   width: 100%;
+}
+
+button {
+  border-radius: 8px;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  background-color: #518071; /* Dark background for buttons */
+  color: #F2ECFF; /* Bright text color for contrast */
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.25s ease; /* Smoother transition for background and scale */
+}
+button:hover {
+  background-color: #3d5afe; /* Brighter color on hover */
+  transform: scale(1.05); /* Slight increase in size for interactivity */
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+  background-color: #536dfe; /* Distinct color for focus state */
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #e0e0e0; /* Lighter text color for light theme */
+    background-color: #212121; /* Keeping dark background for the light theme as well */
+  }
+  a:hover {
+    color: #b388ff; /* Lighter hover color in light theme */
+  }
+  button {
+    background-color: #424242; /* Light theme button background */
+    color: #82b1ff; /* Light theme button text color */
+  }
+}
+
+#navigation {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+  background-color: #00C896;
+}
+
+#navigation button {
+  color: #F2ECFF;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 10px;
+  border-radius: 20px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#profileTable, #userTable {
+  align-items: center;
 }
