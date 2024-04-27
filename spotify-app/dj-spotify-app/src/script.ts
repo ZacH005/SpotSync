@@ -5,8 +5,7 @@ import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-mod
 import { RowDragComp } from "ag-grid-community/dist/lib/rendering/row/rowDragComp";
 import { RowDragFeature } from "ag-grid-community/dist/lib/gridBodyComp/rowDragFeature";
 
-//this is the appID
-const clientId = "29ef0e92931e4445a605be8b6f3b674e";
+const clientId = clientID;
 var accessToken = "";
 
 //Parses and handles parameters from the URL.
