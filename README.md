@@ -1,6 +1,6 @@
 # SpotSync
 
-## SpotSync is a tool for synchronizing data with the Spotify API.
+### SpotSync is a tool for synchronizing data with the Spotify API.
 
 ## Features
 1. Seamless integration with the Spotify API.
