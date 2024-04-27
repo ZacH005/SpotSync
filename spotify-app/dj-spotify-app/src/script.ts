@@ -522,7 +522,6 @@ function newPlaylistGrid() {
 }
 
 function newPlaylist() {
-    // Step 1: Create an empty myPlaylist object with placeholder values
     let newTracks: myTracklist = {
         trackName: "",
         trackArtist: "",
@@ -539,25 +538,18 @@ function newPlaylist() {
     let newPlaylist = {
         playlistName: "New Playlist",
         playlistUrl: " ",
-        playlistID: `playlist_${listofPlaylists.list.length}`, // Example ID generation
+        playlistID: `playlist_${listofPlaylists.list.length}`, 
         playlistImageUrl: " ",
         playlistTotal: 0,
         tracks: [newTracks]
     };
 
-    // Step 2: Add the new empty playlist to listofPlaylists.list
     listofPlaylists.list.push(newPlaylist);
 
-    // Step 3: Update the playlistsGrid to reflect the new playlist
-    // Assuming you have an instance or a method to refresh or recreate the grid with the updated list
     refreshPlaylistsGrid();
 }
 
-// Assuming this is a function that re-renders or refreshes your PlaylistsGrid with the updated listofPlaylists
 function refreshPlaylistsGrid() {
-    // Example: Clear the existing grid and add new data
-    // This assumes you have a way to access your PlaylistsGrid instance or a static method to update it.
-    // If you have an instance of PlaylistsGrid, you might need to call a method on it to refresh the grid.
     let playlistsGridContainer = document.querySelector('#playlistsGridContainer');
     if (playlistsGridContainer) {
         // Clear the existing grid container
@@ -576,7 +568,6 @@ copyPlaylistButton.addEventListener('click', async () => {
 });
 
 function copySelectedRowToAnotherGrid() {
-    // Assuming gridApiSource and gridApiTarget reference your source and target GridApi instances respectively
-    const selectedRows = gridApiSource.getSelectedRows(); // Gets the selected row data
-    gridApiTarget.applyTransaction({ add: selectedRows }); // Adds the selected row data to the target grid
+    const selectedRows = gridApiSource.getSelectedRows(); 
+    gridApiTarget.applyTransaction({ add: selectedRows }); 
 }
